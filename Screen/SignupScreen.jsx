@@ -133,7 +133,7 @@ export default function SignupScreen({ navigation }) {
           >
             <AntDesign name="user" size={24} color="black" />
             <TextInput
-              style={{ paddingHorizontal: 8 }}
+              style={{ paddingHorizontal: 8, width: "100%" }}
               placeholder="Enter Name"
               onChangeText={(e) => setName(e)}
             />
@@ -161,7 +161,7 @@ export default function SignupScreen({ navigation }) {
           >
             <AntDesign name="user" size={24} color="black" />
             <TextInput
-              style={{ paddingHorizontal: 8 }}
+              style={{ paddingHorizontal: 8, width: "100%" }}
               placeholder="Enter Email"
               onChangeText={(e) => setEmail(e)}
             />
@@ -188,7 +188,7 @@ export default function SignupScreen({ navigation }) {
           >
             <Entypo name="lock" size={24} color="black" />
             <TextInput
-              style={{ paddingHorizontal: 8 }}
+              style={{ paddingHorizontal: 8, width: "100%" }}
               placeholder="Enter Password"
               secureTextEntry={true}
               onChangeText={(e) => setPassword(e)}

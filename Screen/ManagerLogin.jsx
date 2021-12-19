@@ -159,7 +159,7 @@ export default function ManagerLogin({ navigation }) {
           >
             <AntDesign name="user" size={24} color="black" />
             <TextInput
-              style={{ paddingHorizontal: 8 }}
+              style={{ paddingHorizontal: 8, width: "100%" }}
               placeholder="Enter Email"
               onChangeText={(e) => {
                 setemail(e);
@@ -189,7 +189,7 @@ export default function ManagerLogin({ navigation }) {
             {/* <AntDesign name="user" size={24} color="black" /> */}
             <Entypo name="lock" size={24} color="black" />
             <TextInput
-              style={{ paddingHorizontal: 8 }}
+              style={{ paddingHorizontal: 8, width: "100%" }}
               placeholder="Enter Password"
               secureTextEntry={true}
               onChangeText={(e) => {

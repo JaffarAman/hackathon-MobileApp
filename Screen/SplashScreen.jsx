@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
 // import * as Animatable from "react-native-animatable";
+// MyCustomComponent = Animatable.createAnimatableComponent(MyCustomComponent);
 export default function SplashScreen({ navigation }) {
   return (
     <View

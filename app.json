@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "mobileapp",
-    "slug": "mobileapp",
+    "name": "khanasubkliye",
+    "slug": "khanasubkliye",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "final smit hackathom",
+    "githubUrl": "https://github.com/JaffarAman/hackathon-MobileApp"
   }
 }
