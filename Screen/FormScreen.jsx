@@ -196,6 +196,7 @@ export default function FormScreen({ route, navigation }) {
                     setname(e);
                   }}
                   placeholder="Enter Name"
+                  style={{ width: "100%" }}
                 />
               </View>
               <View
@@ -223,6 +224,7 @@ export default function FormScreen({ route, navigation }) {
                     setfatherName(e);
                   }}
                   placeholder="Enter Father Name"
+                  style={{ width: "100%" }}
                 />
               </View>
 
@@ -251,6 +253,7 @@ export default function FormScreen({ route, navigation }) {
                     setcnic(e);
                   }}
                   placeholder="Enter CNIC Num"
+                  style={{ width: "100%" }}
                 />
               </View>
               <View
@@ -278,6 +281,7 @@ export default function FormScreen({ route, navigation }) {
                     setdob(e);
                   }}
                   placeholder="Enter Date of Birth"
+                  style={{ width: "100%" }}
                 />
               </View>
 
@@ -306,6 +310,7 @@ export default function FormScreen({ route, navigation }) {
                     setfamilymem(e);
                   }}
                   placeholder="Enter Total No . of Family Member"
+                  style={{ width: "100%" }}
                 />
               </View>
 
@@ -334,6 +339,7 @@ export default function FormScreen({ route, navigation }) {
                     setincome(e);
                   }}
                   placeholder="Enter your Income"
+                  style={{ width: "100%" }}
                 />
               </View>
               <View style={{ alignItems: "center", marginVertical: 15 }}>
