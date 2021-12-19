@@ -49,7 +49,7 @@ export default function SplashScreen({ navigation }) {
         <View style={{ alignItems: "flex-end" }}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("login");
+              navigation.navigate("screen");
             }}
           >
             <Text

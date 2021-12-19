@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,79 +12,106 @@ import {
 } from "react-native";
 // import * as Animatable from "react-native-animatable";
 import { AntDesign, Entypo } from "@expo/vector-icons";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
-import { collection, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import AwesomeAlert from "react-native-awesome-alerts";
 import Loading from "./loadingScreen";
-export default function SignupScreen({ navigation }) {
-  const [name, setName] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
+import ReqStatus from "./ReqStatus";
+import { collection, getDocs } from "firebase/firestore";
+export default function ManagerLogin({ navigation }) {
+  const [email, setemail] = useState(null);
+  const [password, setpassword] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showAlert, setshowAlert] = useState(false);
   const [showAlertmsg1, setshowAlertmsg1] = useState("false");
   const [showAlertmsg2, setshowAlertmsg2] = useState("false");
+  const [managerArr, setManagerArr] = useState([]);
+  useEffect(async () => {
+    const dbRef = collection(db, "managerUser");
+    const todoData = await getDocs(dbRef);
+    const todo = [];
+    todoData.forEach((doc) => {
+      // console.log(doc.data() , doc.id )
+      todo.push({
+        email: doc.data().email,
+        password: doc.data().passowrd,
+        key: doc.id,
+      });
+    });
 
-  const signUp = () => {
-    const dbRef = collection(db, "users");
-
-    if (email === null || password === null || name === null) {
+    // console.log("todoArr" , todo)
+    setManagerArr([...managerArr, ...todo]);
+  }, []);
+  // console.log(managerArr);
+  const login = async () => {
+    if (!email || !password) {
+      console.log(email, password);
       setshowAlertmsg1("Invalid Infomation");
       setshowAlertmsg2("Please Enter Correct Info!");
       setshowAlert(true);
       return;
     }
     setIsLoading(true);
-    // console.log("check user" , email.value , password.value)
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user);
-        console.log(user.uid);
-        addDoc(dbRef, {
-          userName: name,
-          userEmail: email,
-          userUid: user.uid,
-        });
-        setIsLoading(false);
-        navigation.navigate("login");
-      })
-      .catch((error) => {
-        // const errorCode = error.code;
-        const errorMessage = error.message;
-        if (error) {
-          console.log(errorMessage);
-          setshowAlertmsg1("Credentials Error");
-          setshowAlertmsg2(errorMessage);
-          setshowAlert(true);
-        }
-        // ..
-      });
+    const userId = managerArr.filter((val, ind) => {
+      return val.email === email && val.password === password;
+    });
+    console.log("userId", userId[0].password);
+    if (userId[0].email !== "" && userId[0].passowrd !== "") {
+      setemail(null);
+      setpassword(null);
+      setIsLoading(false);
+      navigation.navigate("managerDashboard");
+    } else {
+      setshowAlertmsg1("Credentials Error");
+      setshowAlertmsg2("Email Password not match!...");
+      setshowAlert(true);
+      setIsLoading(false);
+    }
+    // signInWithEmailAndPassword(auth, email, password)
+    //   .then((userCredential) => {
+    //     // Signed in
+    //     const user = userCredential.user;
+    //     // console.log(user);
+    //     console.log(user.uid);
+    //     setemail(null);
+    //     setpassword(null);
+    //     navigation.navigate("managerDashboard", {
+    //       uid: user.uid,
+    //     });
+    //     setIsLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     // console.log(err)
+    //     // console.log(err.message)
+    //     if (err) {
+    //       console.log(err.message);
+    //       setshowAlertmsg1("Credentials Error");
+    //       setshowAlertmsg2(err.message);
+    //       setshowAlert(true);
+    //     }
+    //     setIsLoading(false);
+    //   });
   };
-
   return isLoading ? (
     <Loading />
   ) : (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: "white" }}>
       <View style={{ backgroundColor: "#eee", flex: 1 }}>
         <View
           style={{
             backgroundColor: "#eee",
             flex: 1,
             alignItems: "center",
-            marginTop: 8,
-            //   backgroundColor: "white",
+            // marginTop: ,
+            // backgroundColor: "orange",
           }}
         >
           <Image
             source={require("../assets/logo.png")}
             style={{
               width: 150,
-              height: 130,
-              // backgroundColor: "red",
+              height: 150,
             }}
           />
           <Text
@@ -93,7 +120,7 @@ export default function SignupScreen({ navigation }) {
               fontWeight: "bold",
             }}
           >
-            Create User...
+            WELCOME MANAGER...
           </Text>
         </View>
         {/* <KeyboardAvoidingView
@@ -107,38 +134,9 @@ export default function SignupScreen({ navigation }) {
             backgroundColor: "white",
             borderTopLeftRadius: 35,
             borderTopRightRadius: 35,
-            marginTop: 10,
-            paddingVertical: 10,
+            marginTop: 18,
           }}
         >
-          <View
-            style={{
-              margin: 18,
-              // borderWidth: 0.7,
-              borderColor: "black",
-              // borderStyle: "solid",
-              padding: 15,
-              alignItems: "center",
-              flexDirection: "row",
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 15.84,
-
-              elevation: 0.6,
-            }}
-          >
-            <AntDesign name="user" size={24} color="black" />
-            <TextInput
-              style={{ paddingHorizontal: 8 }}
-              placeholder="Enter Name"
-              onChangeText={(e) => setName(e)}
-            />
-          </View>
-
           <View
             style={{
               margin: 18,
@@ -163,7 +161,9 @@ export default function SignupScreen({ navigation }) {
             <TextInput
               style={{ paddingHorizontal: 8 }}
               placeholder="Enter Email"
-              onChangeText={(e) => setEmail(e)}
+              onChangeText={(e) => {
+                setemail(e);
+              }}
             />
           </View>
           <View
@@ -186,18 +186,22 @@ export default function SignupScreen({ navigation }) {
               elevation: 0.6,
             }}
           >
+            {/* <AntDesign name="user" size={24} color="black" /> */}
             <Entypo name="lock" size={24} color="black" />
             <TextInput
               style={{ paddingHorizontal: 8 }}
               placeholder="Enter Password"
               secureTextEntry={true}
-              onChangeText={(e) => setPassword(e)}
+              onChangeText={(e) => {
+                setpassword(e);
+              }}
             />
           </View>
           <View style={{ alignItems: "center" }}>
             <TouchableOpacity
               onPress={() => {
-                signUp();
+                // navigation.navigate("map");
+                login();
               }}
             >
               <Text
@@ -209,45 +213,32 @@ export default function SignupScreen({ navigation }) {
                   borderRadius: 8,
                   // marginRight: 15,
                   textAlign: "center",
-                  borderWidth: 2,
-                  borderColor: "#89C343",
-                  borderStyle: "solid",
+                  marginVertical: 10,
                 }}
               >
-                Sign Up
+                Log In
               </Text>
             </TouchableOpacity>
-            <View>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.push("login");
-                }}
-              >
-                <Text style={{ fontSize: 14, marginTop: 5 }}>
-                  Already User? Login In
-                </Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
         {/* </KeyboardAvoidingView> */}
-        <AwesomeAlert
-          show={showAlert}
-          showProgress={false}
-          title={showAlertmsg1}
-          message={showAlertmsg2}
-          closeOnTouchOutside={true}
-          closeOnHardwareBackPress={false}
-          // showCancelButton={true}
-          showConfirmButton={true}
-          // cancelText="No, cancel"
-          confirmText="close"
-          confirmButtonColor="#DD6B55"
-          onConfirmPressed={() => {
-            setshowAlert(false);
-          }}
-        />
       </View>
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        title={showAlertmsg1}
+        message={showAlertmsg2}
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        // showCancelButton={true}
+        showConfirmButton={true}
+        // cancelText="No, cancel"
+        confirmText="close"
+        confirmButtonColor="#DD6B55"
+        onConfirmPressed={() => {
+          setshowAlert(false);
+        }}
+      />
     </ScrollView>
   );
 }

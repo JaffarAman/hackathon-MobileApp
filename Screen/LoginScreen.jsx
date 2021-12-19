@@ -13,9 +13,10 @@ import {
 // import * as Animatable from "react-native-animatable";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./firebase/firebase";
+import { auth } from "../firebase/firebase";
 import AwesomeAlert from "react-native-awesome-alerts";
 import Loading from "./loadingScreen";
+import ReqStatus from "./ReqStatus";
 export default function LoginScreen({ navigation }) {
   const [email, setemail] = useState(null);
   const [password, setpassword] = useState(null);
@@ -41,16 +42,18 @@ export default function LoginScreen({ navigation }) {
         console.log(user.uid);
         setemail(null);
         setpassword(null);
-        navigation.navigate("map");
+        navigation.navigate("map", {
+          uid: user.uid,
+        });
         setIsLoading(false);
       })
       .catch((err) => {
         // console.log(err)
         // console.log(err.message)
         if (err) {
-          console.log(errorMessage);
+          console.log(err.message);
           setshowAlertmsg1("Credentials Error");
-          setshowAlertmsg2(errorMessage);
+          setshowAlertmsg2(err.message);
           setshowAlert(true);
         }
         setIsLoading(false);

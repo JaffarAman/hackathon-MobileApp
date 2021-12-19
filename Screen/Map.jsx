@@ -6,9 +6,9 @@ import { allBranches } from "../saylaniBranchData";
 import * as Location from "expo-location";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 // import AsyncStorage from "@react-native-community/async-storage";
-export default function Map({ navigation }) {
+export default function Map({ route, navigation }) {
   console.log(allBranches);
-
+  const { uid } = route.params;
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [userLat, setUserLat] = useState(24.8673515);
@@ -166,7 +166,9 @@ export default function Map({ navigation }) {
 
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("form");
+              navigation.navigate("form", {
+                uid: uid,
+              });
             }}
             style={{
               alignItems: "center",

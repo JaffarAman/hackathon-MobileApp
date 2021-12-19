@@ -9,7 +9,9 @@ import LoginScreen from "../Screen/LoginScreen";
 import SignupScreen from "../Screen/SignupScreen";
 import FormScreen from "../Screen/FormScreen";
 import Map from "../Screen/Map";
-
+import LoginCnfrmScreen from "../Screen/LoginCnfrmScreen";
+import ManagerLogin from "../Screen/ManagerLogin";
+import ManagerDashboard from "../Screen/managerDashboard";
 const Stack = createNativeStackNavigator();
 
 function Navigations() {
@@ -22,11 +24,24 @@ function Navigations() {
           component={SplashScreen}
         />
         <Stack.Screen
+          name="screen"
+          options={{ title: "" }}
+          component={LoginCnfrmScreen}
+        />
+
+        <Stack.Screen
           name="login"
           options={{
             title: "",
           }}
           component={LoginScreen}
+        />
+        <Stack.Screen
+          name="adminlogin"
+          options={{
+            title: "",
+          }}
+          component={ManagerLogin}
         />
         <Stack.Screen
           name="signup"
@@ -37,6 +52,15 @@ function Navigations() {
           name="map"
           options={{ title: "" }}
           component={Map}
+          options={{
+            headerTitle: (props) => <Text>LOGOUT</Text>,
+            // headerTintColor: (prop) => <Text>none</Text>,
+          }}
+        />
+        <Stack.Screen
+          name="managerDashboard"
+          options={{ title: "" }}
+          component={ManagerDashboard}
           options={{
             headerTitle: (props) => <Text>LOGOUT</Text>,
             // headerTintColor: (prop) => <Text>none</Text>,
