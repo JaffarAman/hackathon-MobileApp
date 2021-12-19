@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -12,8 +12,62 @@ import {
 } from "react-native";
 // import * as Animatable from "react-native-animatable";
 import { AntDesign, Entypo } from "@expo/vector-icons";
+import { auth, db } from "./firebase/firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import AwesomeAlert from "react-native-awesome-alerts";
+import Loading from "./loadingScreen";
 export default function SignupScreen({ navigation }) {
-  return (
+  const [name, setName] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showAlert, setshowAlert] = useState(false);
+  const [showAlertmsg1, setshowAlertmsg1] = useState("false");
+  const [showAlertmsg2, setshowAlertmsg2] = useState("false");
+
+  const signUp = () => {
+    const dbRef = collection(db, "users");
+
+    if (email === null || password === null || name === null) {
+      setshowAlertmsg1("Invalid Infomation");
+      setshowAlertmsg2("Please Enter Correct Info!");
+      setshowAlert(true);
+      return;
+    }
+    setIsLoading(true);
+    // console.log("check user" , email.value , password.value)
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        console.log(user.uid);
+        addDoc(dbRef, {
+          userName: name,
+          userEmail: email,
+          userUid: user.uid,
+        });
+        setIsLoading(false);
+        navigation.navigate("login");
+      })
+      .catch((error) => {
+        // const errorCode = error.code;
+        const errorMessage = error.message;
+        if (error) {
+          console.log(errorMessage);
+          setshowAlertmsg1("Credentials Error");
+          setshowAlertmsg2(errorMessage);
+          setshowAlert(true);
+        }
+        // ..
+      });
+  };
+
+  return isLoading ? (
+    <Loading />
+  ) : (
     <ScrollView>
       <View style={{ backgroundColor: "#eee", flex: 1 }}>
         <View
@@ -81,6 +135,7 @@ export default function SignupScreen({ navigation }) {
             <TextInput
               style={{ paddingHorizontal: 8 }}
               placeholder="Enter Name"
+              onChangeText={(e) => setName(e)}
             />
           </View>
 
@@ -108,6 +163,7 @@ export default function SignupScreen({ navigation }) {
             <TextInput
               style={{ paddingHorizontal: 8 }}
               placeholder="Enter Email"
+              onChangeText={(e) => setEmail(e)}
             />
           </View>
           <View
@@ -135,10 +191,15 @@ export default function SignupScreen({ navigation }) {
               style={{ paddingHorizontal: 8 }}
               placeholder="Enter Password"
               secureTextEntry={true}
+              onChangeText={(e) => setPassword(e)}
             />
           </View>
           <View style={{ alignItems: "center" }}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                signUp();
+              }}
+            >
               <Text
                 style={{
                   color: "black",
@@ -170,6 +231,22 @@ export default function SignupScreen({ navigation }) {
           </View>
         </View>
         {/* </KeyboardAvoidingView> */}
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title={showAlertmsg1}
+          message={showAlertmsg2}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          // showCancelButton={true}
+          showConfirmButton={true}
+          // cancelText="No, cancel"
+          confirmText="close"
+          confirmButtonColor="#DD6B55"
+          onConfirmPressed={() => {
+            setshowAlert(false);
+          }}
+        />
       </View>
     </ScrollView>
   );

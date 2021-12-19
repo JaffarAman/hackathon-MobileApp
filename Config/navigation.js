@@ -15,7 +15,7 @@ const Stack = createNativeStackNavigator();
 function Navigations() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="form">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Home"
           options={{ title: "" }}
@@ -33,7 +33,15 @@ function Navigations() {
           options={{ title: "" }}
           component={SignupScreen}
         />
-        <Stack.Screen name="map" options={{ title: "" }} component={Map} />
+        <Stack.Screen
+          name="map"
+          options={{ title: "" }}
+          component={Map}
+          options={{
+            headerTitle: (props) => <Text>LOGOUT</Text>,
+            // headerTintColor: (prop) => <Text>none</Text>,
+          }}
+        />
         <Stack.Screen
           name="form"
           options={{ title: "" }}

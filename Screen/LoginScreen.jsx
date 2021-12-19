@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -12,8 +12,53 @@ import {
 } from "react-native";
 // import * as Animatable from "react-native-animatable";
 import { AntDesign, Entypo } from "@expo/vector-icons";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebase/firebase";
+import AwesomeAlert from "react-native-awesome-alerts";
+import Loading from "./loadingScreen";
 export default function LoginScreen({ navigation }) {
-  return (
+  const [email, setemail] = useState(null);
+  const [password, setpassword] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showAlert, setshowAlert] = useState(false);
+  const [showAlertmsg1, setshowAlertmsg1] = useState("false");
+  const [showAlertmsg2, setshowAlertmsg2] = useState("false");
+  const login = async () => {
+    if (!email || !password) {
+      console.log(email, password);
+      setshowAlertmsg1("Invalid Infomation");
+      setshowAlertmsg2("Please Enter Correct Info!");
+      setshowAlert(true);
+      return;
+    }
+    setIsLoading(true);
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        // console.log(user);
+        console.log(user.uid);
+        setemail(null);
+        setpassword(null);
+        navigation.navigate("map");
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        // console.log(err)
+        // console.log(err.message)
+        if (err) {
+          console.log(errorMessage);
+          setshowAlertmsg1("Credentials Error");
+          setshowAlertmsg2(errorMessage);
+          setshowAlert(true);
+        }
+        setIsLoading(false);
+      });
+  };
+  return isLoading ? (
+    <Loading />
+  ) : (
     <ScrollView style={{ backgroundColor: "white" }}>
       <View style={{ backgroundColor: "#eee", flex: 1 }}>
         <View
@@ -79,6 +124,9 @@ export default function LoginScreen({ navigation }) {
             <TextInput
               style={{ paddingHorizontal: 8 }}
               placeholder="Enter Email"
+              onChangeText={(e) => {
+                setemail(e);
+              }}
             />
           </View>
           <View
@@ -107,12 +155,16 @@ export default function LoginScreen({ navigation }) {
               style={{ paddingHorizontal: 8 }}
               placeholder="Enter Password"
               secureTextEntry={true}
+              onChangeText={(e) => {
+                setpassword(e);
+              }}
             />
           </View>
           <View style={{ alignItems: "center" }}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("map");
+                // navigation.navigate("map");
+                login();
               }}
             >
               <Text
@@ -158,6 +210,22 @@ export default function LoginScreen({ navigation }) {
         </View>
         {/* </KeyboardAvoidingView> */}
       </View>
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        title={showAlertmsg1}
+        message={showAlertmsg2}
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        // showCancelButton={true}
+        showConfirmButton={true}
+        // cancelText="No, cancel"
+        confirmText="close"
+        confirmButtonColor="#DD6B55"
+        onConfirmPressed={() => {
+          setshowAlert(false);
+        }}
+      />
     </ScrollView>
   );
 }
